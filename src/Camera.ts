@@ -9,11 +9,12 @@ export class Camera {
 	private up: Vector3 				= Vector3.UP;
 	private forward: Vector3 			= new Vector3(0.0, 0.0, -1.0);
 
+
 	private yaw: number 				= -90.0;
 	private pitch: number 				= 0.0;
 	private zoom: number 				= 1.0;
-	private mouseSensitivity: number 	= 0.1;
-	private speed: number 				= 2.5;
+	private mouseSensitivity: number 	= 0.2;
+	private speed: number 				= 0.1;
 
 	private perspective: Mat4 			= new Mat4();
 	private view: Mat4 					= new Mat4();
@@ -31,10 +32,45 @@ export class Camera {
 
 		this.resetPerspectiveMatrix();
 		this.resetViewMatrix();
+
+		
 	}
 
 	get Position(): Vector3 {
 		return this.position;
+	}
+
+	public onKeyDown(e: any) {
+		if(e.key == "w"){
+			this.position.add(this.forward.replicate().multiply(this.speed));
+			console.log(this.position)
+		} else if(e.key == "s") {
+			this.position.add(this.forward.replicate().multiply(-this.speed));
+		}
+
+		if(e.key == "a"){
+			this.position.add(this.right.replicate().multiply(this.speed));
+		} else if(e.key == "d") {
+			this.position.add(this.right.replicate().multiply(-this.speed));
+		}
+
+		if(e.key == " "){
+			this.position.add(this.up.replicate().multiply(this.speed));
+		} else if(e.key == "Shift"){
+			this.position.add(this.up.replicate().multiply(-this.speed));
+		}
+		this.resetViewMatrix();
+	}
+
+	public onMouseMove(e: any) {
+		this.yaw += -(e.movementX)*this.mouseSensitivity*Math.PI/180;
+		this.pitch += -(e.movementY)*this.mouseSensitivity*Math.PI/180;
+
+		this.forward.x = Math.cos(this.yaw) * Math.cos(this.pitch);
+		this.forward.y = Math.sin(this.pitch);
+		this.forward.z = Math.sin(this.yaw) * Math.cos(this.pitch);
+		this.forward.normalize();
+		this.resetViewMatrix();
 	}
 
 	private resetPerspectiveMatrix(): void {
@@ -57,8 +93,8 @@ export class Camera {
 
 	private resetViewMatrix(): void {
 		const zaxis: Vector3 = this.forward.replicate().multiply(-1).normalize();
-		const xaxis: Vector3 = Vector3.cross(Vector3.UP, zaxis).normalize();
-		const yaxis: Vector3 = Vector3.cross(zaxis, xaxis);
+		this.right = Vector3.cross(Vector3.UP, zaxis).normalize();
+		this.up = Vector3.cross(zaxis, this.right);
 
 		let translation: Mat4 = new Mat4();
 		translation.set(0, 3, -this.position.x); // Third column, first row
@@ -66,12 +102,12 @@ export class Camera {
 		translation.set(2, 3, -this.position.z);
 
 		let rotation: Mat4 = new Mat4();
-		rotation.set(0, 0, xaxis.x); // First column, first row
-		rotation.set(0, 1, xaxis.y);
-		rotation.set(0, 2, xaxis.z);
-		rotation.set(1, 0, yaxis.x); // First column, second row
-		rotation.set(1, 1, yaxis.y);
-		rotation.set(1, 2, yaxis.z);
+		rotation.set(0, 0, this.right.x); // First column, first row
+		rotation.set(0, 1, this.right.y);
+		rotation.set(0, 2, this.right.z);
+		rotation.set(1, 0, this.up.x); // First column, second row
+		rotation.set(1, 1, this.up.y);
+		rotation.set(1, 2, this.up.z);
 		rotation.set(2, 0, zaxis.x); // First column, third row
 		rotation.set(2, 1, zaxis.y);
 		rotation.set(2, 2, zaxis.z); 

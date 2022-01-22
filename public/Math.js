@@ -10,6 +10,21 @@ export class Vector3 {
     static get UP() {
         return new Vector3(0.0, 1.0, 0.0);
     }
+    static get DOWN() {
+        return new Vector3(0.0, -1.0, 0.0);
+    }
+    static get LEFT() {
+        return new Vector3(-1.0, 0.0, 0.0);
+    }
+    static get RIGHT() {
+        return new Vector3(1.0, 0.0, 0.0);
+    }
+    static get FORWARD() {
+        return new Vector3(0.0, 0.0, 1.0);
+    }
+    static get BACK() {
+        return new Vector3(0.0, 0.0, -1.0);
+    }
     static get ONE() {
         return new Vector3(1.0, 1.0, 1.0);
     }
@@ -31,6 +46,15 @@ export class Vector3 {
     }
     get z() {
         return this._z;
+    }
+    set x(s) {
+        this._x = s;
+    }
+    set y(s) {
+        this._y = s;
+    }
+    set z(s) {
+        this._z = s;
     }
     mag() {
         return Math.sqrt(this._x * this._x + this._y * this._y + this._z * this._z);

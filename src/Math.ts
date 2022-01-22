@@ -21,6 +21,26 @@ export class Vector3 {
 		return new Vector3(0.0, 1.0, 0.0);
 	}
 
+	static get DOWN(): Vector3 {
+		return new Vector3(0.0, -1.0, 0.0);
+	}
+
+	static get LEFT(): Vector3 {
+		return new Vector3(-1.0, 0.0, 0.0);
+	}
+
+	static get RIGHT(): Vector3 {
+		return new Vector3(1.0, 0.0, 0.0);
+	}
+
+	static get FORWARD(): Vector3 {
+		return new Vector3(0.0, 0.0, 1.0);
+	}
+
+	static get BACK(): Vector3 {
+		return new Vector3(0.0, 0.0, -1.0);
+	}
+
 	static get ONE(): Vector3 {
 		return new Vector3(1.0, 1.0, 1.0);
 	}
@@ -41,6 +61,15 @@ export class Vector3 {
 	}
 	public get z(): number {
 		return this._z;
+	}
+	public set x(s: number) {
+		this._x = s;
+	}
+	public set y(s: number) {
+		this._y = s;
+	}
+	public set z(s: number) {
+		this._z = s;
 	}
 
 	public mag(): number {
