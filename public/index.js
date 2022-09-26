@@ -1,8 +1,17 @@
 import { Scene } from "./Scene.js";
+let fps = 60;
+let lastLoop = Date.now();
+let interval = 1000 / fps;
+let delta;
 function run() {
-    scene.update();
-    scene.draw();
     window.requestAnimationFrame(run);
+    const thisLoop = Date.now();
+    delta = (thisLoop - lastLoop);
+    if (delta > interval) {
+        lastLoop = thisLoop - (delta % interval);
+        scene.update();
+        scene.draw();
+    }
 }
 const scene = Scene.getScene();
 window.addEventListener("keydown", (e) => {

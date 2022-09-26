@@ -7,6 +7,9 @@ export class Vector3 {
     replicate() {
         return new Vector3(this._x, this._y, this._z);
     }
+    static get ZERO() {
+        return new Vector3(0.0, 0.0, 0.0);
+    }
     static get UP() {
         return new Vector3(0.0, 1.0, 0.0);
     }
@@ -90,6 +93,9 @@ export class Vector3 {
     normalize() {
         return this.divide(this.mag());
     }
+    static normalize(v) {
+        return v.replicate().normalize();
+    }
     static cross(v1, v2) {
         return new Vector3(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
     }
@@ -99,10 +105,22 @@ export class Vector3 {
     static subtract(v1, v2) {
         return new Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
     }
+    static add(v1, v2) {
+        return new Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+    }
     static calculateNormal(v1, v2, v3) {
         const l1 = Vector3.subtract(v2, v1);
         const l2 = Vector3.subtract(v3, v1);
         return Vector3.cross(l1, l2).normalize();
+    }
+    static linePlaneIntersection(planePoint, planeNormal, lineStart, lineEnd) {
+        const planeD = -Vector3.dot(planeNormal, planePoint);
+        const ad = Vector3.dot(lineStart, planeNormal);
+        const bd = Vector3.dot(lineEnd, planeNormal);
+        const t = (-planeD - ad) / (bd - ad);
+        const lineStartEnd = Vector3.subtract(lineEnd, lineStart);
+        const lineIntersect = lineStartEnd.replicate().multiply(t);
+        return Vector3.add(lineStart, lineIntersect);
     }
 }
 export class Mat4 {
